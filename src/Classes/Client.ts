@@ -61,7 +61,7 @@ export class Client {
         this.selfReply = opts.selfReply ?? false;
         this.WAVersion = opts.WAVersion;
         this.autoMention = opts.autoMention ?? false;
-        this.fallbackWAVersion = [2, 3000, 1021387508];
+        this.fallbackWAVersion = [2, 3000, 1025144028];
         this.authAdapter = opts.authAdapter ?? useMultiFileAuthState(this.authDir as string);
         this.browser = opts.browser ?? Browsers.ubuntu('CHROME');
 

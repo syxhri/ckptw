@@ -68,7 +68,7 @@ export class Ctx implements ICtx {
         return this._args;
     }
 
-    get msg() {
+    get msg(): IMessageInfo & { media: { toBuffer: () => Promise<Buffer | import('stream').Transform | null>, toStream: () => Promise<Buffer | import('stream').Transform | null> } } {
         return {
             ...this._msg,
             media: {
