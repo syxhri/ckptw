@@ -14,7 +14,7 @@ export class Cooldown extends EventEmitter {
         this.cooldown = ctx._self.cooldown;
         this.timeout = 0;
 
-        let q = `cooldown_${ctx._used.command}_${decodeJid(ctx._msg.key.remoteJid as string)}_${decodeJid(ctx._sender.jid as string)}`;
+        let q = `cooldown_${ctx._used.command}_${decodeJid(ctx._msg.key?.remoteJid as string)}_${decodeJid(ctx._sender.jid as string)}`;
         const get = this.cooldown?.get(q);
         if (get) {
             this.timeout = Number(get) - Date.now();

@@ -53,13 +53,13 @@ export const getContentFromMsg = (msg: { message: proto.IMessage }) => {
   }
 };
 export const getSender = (msg: proto.IWebMessageInfo, client: ReturnType<typeof makeWASocket>): string | null | undefined => {
-  return msg.key.fromMe
+  return msg.key?.fromMe
     ? client.user?.id
     : msg.participant
     ? msg.participant
-    : msg.key.participant
+    : msg.key?.participant
     ? msg.key.participant
-    : msg.key.remoteJid;
+    : msg.key?.remoteJid;
 };
 
 export const walk = (dir: string, callback: (filepath: string, stats?: fs.StatsBase<number>) => {}) => {
@@ -68,7 +68,7 @@ export const walk = (dir: string, callback: (filepath: string, stats?: fs.StatsB
     var filepath = path.join(dir, file);
     const stats = fs.statSync(filepath);
     if (stats.isDirectory()) {
-      module.exports.walk(filepath, callback);
+      walk(filepath, callback);
     } else if (stats.isFile()) {
       callback(filepath, stats);
     }

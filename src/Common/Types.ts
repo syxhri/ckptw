@@ -1,6 +1,6 @@
 import { Collection } from "@discordjs/collection";
 import { Ctx } from "../Classes/Ctx";
-import makeWASocket, { Contact, downloadContentFromMessage, getContentType, proto, WABrowserDescription, WAProto } from "@whiskeysockets/baileys"
+import makeWASocket, { Contact, downloadContentFromMessage, getContentType, proto, WABrowserDescription, WAMessage, WAProto } from "@whiskeysockets/baileys"
 import { Client } from "../Classes/Client";
 
 export type ButtonType = 'cta_url' | 'cta_call' | 'cta_copy' | 'cta_reminder' | 'cta_cancel_reminder' | 'address_message' | 'send_location' | 'quick_reply';
@@ -49,7 +49,7 @@ export interface ICollectorArgs {
 }
 
 export interface ICtx {
-    _used: { prefix?: Array<string>|string, command?: string; upsert?: any; hears?: any; poll?: any; pollVote?: any; reactions?: any; };
+    _used: { prefix?: Array<string> | string, command?: string; upsert?: any; hears?: any; poll?: any; pollVote?: any; reactions?: any; };
     _args: Array<String>;
     _self: ICtxSelf;
     _client: ReturnType<typeof makeWASocket>;
@@ -66,11 +66,15 @@ export interface ICollectorOptions {
     endReason?: string[]
 }
 
-export interface IMessageInfo extends WAProto.IWebMessageInfo {
+
+export interface IMessageInfo extends WAMessage {
     content: string | null | undefined,
     messageType: keyof WAProto.IMessage | undefined,
     pollValues?: Array<string>,
-    pollSingleSelect?: boolean
+    pollSingleSelect?: boolean,
+    key: WAMessage['key'],
+    message?: WAMessage['message'],
+    pushName?: WAMessage['pushName']
 }
 
 export interface IMessageCollectorCollect extends IMessageInfo {
@@ -89,24 +93,25 @@ export interface ICtxSelf extends Client {
 }
 
 export interface ICtxOptions {
-    used: { prefix?: Array<string>|string, command?: string; upsert?: any; hears?: any; poll?: any; pollVote?: any; reactions?: any; };
+    used: { prefix?: Array<string> | string, command?: string; upsert?: any; hears?: any; poll?: any; pollVote?: any; reactions?: any; };
     args: string[];
     self: ICtxSelf;
     client: ReturnType<typeof makeWASocket>;
 }
 
-export interface IInteractiveMessageContent { 
+export interface IInteractiveMessageContent {
     body?: string;
     footer?: string;
-    header?: (proto.Message.InteractiveMessage.IHeader|null);
-    contextInfo?: (proto.IContextInfo|null);
-    shopStorefrontMessage?: (proto.Message.InteractiveMessage.IShopMessage|null);
-    collectionMessage?: (proto.Message.InteractiveMessage.ICollectionMessage|null);
-    nativeFlowMessage?: (proto.Message.InteractiveMessage.INativeFlowMessage|null);
-    carouselMessage?: (proto.Message.InteractiveMessage.ICarouselMessage|null);
+    header?: (proto.Message.InteractiveMessage.IHeader | null);
+    contextInfo?: (proto.IContextInfo | null);
+    shopStorefrontMessage?: (proto.Message.InteractiveMessage.IShopMessage | null);
+    collectionMessage?: (proto.Message.InteractiveMessage.ICollectionMessage | null);
+    nativeFlowMessage?: (proto.Message.InteractiveMessage.INativeFlowMessage | null);
+    carouselMessage?: (proto.Message.InteractiveMessage.ICarouselMessage | null);
 }
 
 export interface IMe extends Contact {
+    id: string;
     decodedId: string;
     readyAt?: number;
 }

@@ -1,11 +1,11 @@
-import { Consolefy } from "@mengkodingan/consolefy";
+import consolefy from "@mengkodingan/consolefy";
 import { walk } from "../Common/Functions";
 
 
 export class CommandHandler {
     _bot: any;
     _path: string;
-    consolefy?: Consolefy;
+    consolefy?: consolefy.Consolefy;
 
     /**
      * Create a new command handler instance
@@ -31,21 +31,36 @@ export class CommandHandler {
         this._bot = bot;
         this._path = path;
 
-        this.consolefy = new Consolefy({ tag: 'command-handler' });
+        this.consolefy = new consolefy.Consolefy({ tag: 'command-handler' });
     }
 
-    load(isShowLog: boolean = true) {
-      if (isShowLog) this.consolefy?.group("Command Handler Load")
-        walk(this._path, (x: string): any => {
-          let cmdObj = require(x);
-          if(!cmdObj.type || cmdObj.type === 'command') {
+    async load(isShowLog: boolean = true) {
+      if (isShowLog) this.consolefy?.group("Command Handler Load");
+
+      const files: string[] = [];
+
+      walk(this._path, (filepath: string, stats?: unknown) => {
+        files.push(filepath);
+        return {};
+      });
+
+      for (const filepath of files) {
+        try {
+          const module = await import(filepath);
+          const cmdObj = module.default || module;
+
+          if (!cmdObj.type || cmdObj.type === 'command') {
             this._bot.cmd.set(cmdObj.name, cmdObj);
             if (isShowLog) this.consolefy?.success(`Loaded Command - ${cmdObj.name}`);
-          } else if(cmdObj.type === 'hears') {
+          } else if (cmdObj.type === 'hears') {
             this._bot.hearsMap.set(cmdObj.name, cmdObj);
             if (isShowLog) this.consolefy?.success(`Loaded Hears - ${cmdObj.name}`);
           }
-        });
+        } catch (error) {
+          if (isShowLog) this.consolefy?.error(`Failed to load ${filepath}: ${error}`);
+        }
+      }
+
       if (isShowLog) this.consolefy?.groupEnd();
     }
 }

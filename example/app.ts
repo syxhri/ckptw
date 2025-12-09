@@ -1,14 +1,14 @@
-import { ButtonBuilder, Client, Cooldown, SectionsBuilder, TemplateButtonsBuilder, Events, MessageType, CarouselBuilder, fetchLatestWaWebVersion } from "../lib";
+import { ButtonBuilder, Client, Cooldown, SectionsBuilder, TemplateButtonsBuilder, Events, MessageType, CarouselBuilder, fetchLatestWaWebVersion } from "../lib/index.js";
 import fs from "node:fs";
 import util from "util";
 
 const bot = new Client({
-    prefix: "!",
-    readIncommingMsg: true
+  prefix: "!",
+  readIncommingMsg: true
 });
 
 bot.ev.once(Events.ClientReady, (m) => {
-    console.log(`ready at ${m.user.id}`);
+  console.log(`ready at ${m.user.id}`);
 });
 
 bot.ev.on(Events.Poll, (m) => {
@@ -31,82 +31,82 @@ bot.use(async (ctx, next) => {
   await next();
 });
 
-bot.command('ping', async(ctx) => ctx.reply({ text: 'pong!' }));
-bot.command('hi', async(ctx) => ctx.reply('hello! you can use string as a first parameter in reply function too!'));
+bot.command('ping', async (ctx) => ctx.reply({ text: 'pong!' }));
+bot.command('hi', async (ctx) => ctx.reply('hello! you can use string as a first parameter in reply function too!'));
 
-bot.hears('test', async(ctx) => ctx.reply('test 1 2 3 beep boop...'));
+bot.hears('test', async (ctx) => ctx.reply('test 1 2 3 beep boop...'));
 
-bot.hears(MessageType.stickerMessage, async(ctx) => ctx.reply('wow, cool sticker'));
-bot.hears(['help', 'menu'], async(ctx) => ctx.reply('hears can be use with array too!'));
-bot.hears(/(using\s?)?regex/, async(ctx) => ctx.reply('or using regex!'));
+bot.hears(MessageType.stickerMessage, async (ctx) => ctx.reply('wow, cool sticker'));
+bot.hears(['help', 'menu'], async (ctx) => ctx.reply('hears can be use with array too!'));
+bot.hears(/(using\s?)?regex/, async (ctx) => ctx.reply('or using regex!'));
 
-bot.command('simulatetyping', async(ctx) => {
-    ctx.simulateTyping();
-    ctx.reply("aaa")
+bot.command('simulatetyping', async (ctx) => {
+  ctx.simulateTyping();
+  ctx.reply("aaa")
 });
 
-bot.command('collector', async(ctx) => {
+bot.command('collector', async (ctx) => {
   let col = ctx.MessageCollector({ time: 10000 }); // in milliseconds
   ctx.reply({ text: "say something... Timeout: 10s" });
 
   col.on("collect", (m) => {
-      console.log("COLLECTED", m); // m is an Collections
-      ctx.sendMessage(ctx.id!, {
-          text: `Collected: ${m.content}\nFrom: ${m.sender}`,
-      });
+    console.log("COLLECTED", m); // m is an Collections
+    ctx.sendMessage(ctx.id!, {
+      text: `Collected: ${m.content}\nFrom: ${m.sender}`,
+    });
   });
 
   col.on("end", (collector, r) => {
-      console.log("ended", r); // r = reason
-      ctx.sendMessage(ctx.id!, { text: `Collector ended` });
+    console.log("ended", r); // r = reason
+    ctx.sendMessage(ctx.id!, { text: `Collector ended` });
   });
 })
 
-bot.command('cooldown', async(ctx) => {
+bot.command('cooldown', async (ctx) => {
   const cd = new Cooldown(ctx, 8000); // add this
-  if(cd.onCooldown) return ctx.reply(`slow down... wait ${cd.timeleft}ms`); // if user has cooldown stop the code by return something.
+  if (cd.onCooldown) return ctx.reply(`slow down... wait ${cd.timeleft}ms`); // if user has cooldown stop the code by return something.
 
   ctx.reply('pong!')
 })
 
-bot.command('editmessage', async(ctx) => {
+bot.command('editmessage', async (ctx) => {
   let msg = await ctx.reply('this message will be edited in 2 seconds');
   setTimeout(() => {
     ctx.editMessage(msg!.key, 'edited!');
   }, 2000);
 })
 
-bot.command('mybtn', async(ctx) => {
+bot.command('mybtn', async (ctx) => {
   let button = new ButtonBuilder()
-      .setId('!ping')
-      .setDisplayText('command Ping')
-      .setType('quick_reply')
-      .build();
+    .setId('!ping')
+    .setDisplayText('command Ping')
+    .setType('quick_reply')
+    .build();
 
   let button2 = new ButtonBuilder()
-      .setId('id2')
-      .setDisplayText('copy code')
-      .setType('cta_copy')
-      .setCopyCode('hello world')
-      .build();
+    .setId('id2')
+    .setDisplayText('copy code')
+    .setType('cta_copy')
+    .setCopyCode('hello world')
+    .build();
 
   let button3 = new ButtonBuilder()
-      .setId('id3')
-      .setDisplayText('@mengkodingan/ckptw')
-      .setType('cta_url')
-      .setURL('https://github.com/mengkodingan/ckptw')
-      .setMerchantURL('https://github.com/mengkodingan')
-      .build();
+    .setId('id3')
+    .setDisplayText('@mengkodingan/ckptw')
+    .setType('cta_url')
+    .setURL('https://github.com/mengkodingan/ckptw')
+    .setMerchantURL('https://github.com/mengkodingan')
+    .build();
 
   // use sendInteractiveMessage if you dont want to quote the message.
-  ctx.replyInteractiveMessage({ 
-    body: 'this is body', 
-    footer: 'this is footer', 
-    nativeFlowMessage: { buttons: [button, button2, button3] } 
+  ctx.replyInteractiveMessage({
+    body: 'this is body',
+    footer: 'this is footer',
+    nativeFlowMessage: { buttons: [button, button2, button3] }
   })
 })
 
-bot.command('mysections', async(ctx) => {
+bot.command('mysections', async (ctx) => {
   let section1 = new SectionsBuilder()
     .setDisplayText("Click me")
     .addSection({
@@ -129,14 +129,14 @@ bot.command('mysections', async(ctx) => {
   ctx.sendInteractiveMessage(ctx.id!, { body: 'this is body', footer: 'this is footer', nativeFlowMessage: { buttons: [section1] } })
 })
 
-bot.command('mycarousel', async(ctx) => {
+bot.command('mycarousel', async (ctx) => {
   let button = new ButtonBuilder()
-      .setId('!ping')
-      .setDisplayText('command Ping')
-      .setType('quick_reply')
-      .build();
+    .setId('!ping')
+    .setDisplayText('command Ping')
+    .setType('quick_reply')
+    .build();
 
-  let exampleMediaAttachment = await ctx.prepareWAMessageMedia({ image: { url:  "https://github.com/mengkodingan.png" } }, { upload: ctx._client.waUploadToServer })
+  let exampleMediaAttachment = await ctx.prepareWAMessageMedia({ image: { url: "https://github.com/mengkodingan.png" } }, { upload: ctx._client.waUploadToServer })
   let cards = new CarouselBuilder()
     .addCard({
       body: "BODY 1",
@@ -161,28 +161,28 @@ bot.command('mycarousel', async(ctx) => {
     .build();
 
 
-  ctx.replyInteractiveMessage({ 
-      body: "this is body",
-      footer: "this is footer",
-      carouselMessage: {
-          cards,
-      },
+  ctx.replyInteractiveMessage({
+    body: "this is body",
+    footer: "this is footer",
+    carouselMessage: {
+      cards,
+    },
   });
 })
 
 bot.command({
-    name: "e",
-    code: async (ctx) => {
-      try {
-        var evaled = await eval(ctx.args.join(" "));
-        return ctx.reply({
-          text: util.inspect(evaled, { depth: 0 }),
-        });
-      } catch (err) {
-        return ctx.reply({ text: `${err}!` });
-      }
-    },
-  });
+  name: "e",
+  code: async (ctx) => {
+    try {
+      var evaled = await eval(ctx.args.join(" "));
+      return ctx.reply({
+        text: util.inspect(evaled, { depth: 0 }),
+      });
+    } catch (err) {
+      return ctx.reply({ text: `${err}!` });
+    }
+  },
+});
 
 bot.launch();
 

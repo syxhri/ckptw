@@ -18,7 +18,7 @@ import { Ctx } from "./Ctx";
 import { decodeJid, getContentFromMsg } from "../Common/Functions";
 import { MessageEventList } from "../Handler/MessageEvents";
 import { PHONENUMBER_MCC } from "../Constant/PHONENUMBER_MCC";
-import { Consolefy } from "@mengkodingan/consolefy";
+import consolefy from "@mengkodingan/consolefy";
 import ExtractEventsContent from "../Handler/ExtractEventsContent";
  
 export class Client {
@@ -45,7 +45,7 @@ export class Client {
     autoMention?: boolean;
     fallbackWAVersion: [number, number, number];
     authAdapter?: Promise<any>;
-    consolefy?: Consolefy;
+    consolefy?: consolefy.Consolefy;
     browser?: WABrowserDescription;
 
     constructor(opts: IClientOptions) {   
@@ -71,7 +71,7 @@ export class Client {
         this.hearsMap = new Collection();
         this.middlewares = new Collection();
 
-        this.consolefy = new Consolefy();
+        this.consolefy = new consolefy.Consolefy();
 
         if(typeof this.prefix === "string") this.prefix = this.prefix.split('');
     }
@@ -101,9 +101,9 @@ export class Client {
     read(m: IMessageInfo) {
         this.core?.readMessages([
             {
-              remoteJid: m.key.remoteJid,
-              id: m.key.id,
-              participant: m.key.participant
+              remoteJid: m.key?.remoteJid,
+              id: m.key?.id,
+              participant: m.key?.participant
             },
         ]);
     }

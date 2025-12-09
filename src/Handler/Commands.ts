@@ -2,16 +2,16 @@ import { arrayMove } from "../Common/Functions";
 import { Ctx } from "../Classes/Ctx";
 import { ICommandOptions, ICtxSelf } from "../Common/Types";
 
-export = async (self: ICtxSelf, runMiddlewares: (ctx: Ctx, index?: number) => Promise<boolean>) => {
+export default async (self: ICtxSelf, runMiddlewares: (ctx: Ctx, index?: number) => Promise<boolean>) => {
     let { cmd, prefix, m } = self;
 
     if (!m?.message || m.key?.remoteJid === "status@broadcast") return;
-    if (!self.selfReply && m.key.fromMe) return;
+    if (!self.selfReply && m.key?.fromMe) return;
 
-    const hasHears = Array.from(self.hearsMap.values()).filter((x) => 
-        x.name === m.content || 
-        x.name === m.messageType || 
-        new RegExp(x.name).test(m.content as string) || 
+    const hasHears = Array.from(self.hearsMap.values()).filter((x) =>
+        x.name === m.content ||
+        x.name === m.messageType ||
+        new RegExp(x.name).test(m.content as string) ||
         (Array.isArray(x.name) && x.name.includes(m.content))
     );
 
@@ -39,7 +39,7 @@ export = async (self: ICtxSelf, runMiddlewares: (ctx: Ctx, index?: number) => Pr
 
     if (!commandName) return;
 
-    const matchedCommands = commandsList.filter((c: ICommandOptions) => 
+    const matchedCommands = commandsList.filter((c: ICommandOptions) =>
         c.name.toLowerCase() === commandName ||
         (Array.isArray(c.aliases) ? c.aliases.includes(commandName as string) : c.aliases === commandName)
     );

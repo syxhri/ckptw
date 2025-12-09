@@ -37,7 +37,7 @@ export class Ctx implements ICtx {
     }
 
     get id(): string | null | undefined {
-        return this._msg.key.remoteJid;
+        return this._msg.key?.remoteJid;
     }
 
     get used() {
@@ -61,7 +61,7 @@ export class Ctx implements ICtx {
     }
 
     get decodedId(): string | null | undefined {
-        if(this._msg.key.remoteJid) return decodeJid(this._msg.key.remoteJid);
+        if(this._msg.key?.remoteJid) return decodeJid(this._msg.key.remoteJid);
     }
 
     get args(): Array<string> {
@@ -82,7 +82,7 @@ export class Ctx implements ICtx {
         return this._sender;
     }
 
-    async sendMessage(jid: string, content: AnyMessageContent, options: MiscMessageGenerationOptions = {}): Promise<undefined | WAProto.WebMessageInfo> {
+    async sendMessage(jid: string, content: AnyMessageContent, options: MiscMessageGenerationOptions = {}) {
         if(this._self.autoMention) {
             let matchMention = (content as any).text?.match(/(@[^](?![a-zA-Z]).\d*[$]*)/gm);
             if (matchMention) {
@@ -103,7 +103,7 @@ export class Ctx implements ICtx {
         return this._client.sendMessage(jid, content, options);
     }
 
-    async reply(content: AnyMessageContent | string, options: MiscMessageGenerationOptions = {}): Promise<undefined | WAProto.WebMessageInfo> {
+    async reply(content: AnyMessageContent | string, options: MiscMessageGenerationOptions = {}) {
         if(typeof content === 'string') content = { text: content }
         return this.sendMessage(this.id as string, content, {
           quoted: this._msg,
@@ -111,11 +111,11 @@ export class Ctx implements ICtx {
         });
     }
     
-    async replyWithJid(jid: string, content: AnyMessageContent, options: MiscMessageGenerationOptions = {}): Promise<undefined | WAProto.WebMessageInfo> {
+    async replyWithJid(jid: string, content: AnyMessageContent, options: MiscMessageGenerationOptions = {}) {
         return this.sendMessage(jid, content, { quoted: this._msg, ...options });
     }
     
-    async react(jid: string, emoji: string, key?: WAProto.IMessageKey): Promise<undefined | WAProto.WebMessageInfo> {
+    async react(jid: string, emoji: string, key?: WAProto.IMessageKey) {
         return this._client.sendMessage(jid, {
           react: { text: emoji, key: key ? key : this._msg.key },
         });
@@ -169,9 +169,9 @@ export class Ctx implements ICtx {
         let m = this._msg;
         this._client.readMessages([
             {
-              remoteJid: m.key.remoteJid,
-              id: m.key.id,
-              participant: m.key.participant
+              remoteJid: m.key?.remoteJid,
+              id: m.key?.id,
+              participant: m.key?.participant
             },
         ]);
     }
@@ -180,7 +180,7 @@ export class Ctx implements ICtx {
         this._client.sendPresenceUpdate('composing', this.id as string)
     }
 
-    async deleteMessage(key: WAProto.IMessageKey): Promise<undefined | WAProto.WebMessageInfo> {
+    async deleteMessage(key: WAProto.IMessageKey) {
         return this._client.sendMessage(this.id as string, { delete: key });
     }
 
@@ -195,7 +195,7 @@ export class Ctx implements ICtx {
         });
     }
 
-    async sendPoll(jid: string, args: { name: string, values: Array<string>, singleSelect: boolean, selectableCount?: boolean }): Promise<undefined | WAProto.WebMessageInfo> {
+    async sendPoll(jid: string, args: { name: string, values: Array<string>, singleSelect: boolean, selectableCount?: boolean }) {
         args.selectableCount = args.singleSelect ? true : false;
         return this._client.sendMessage(jid, { poll: args as PollMessageOptions })
     }
@@ -205,7 +205,7 @@ export class Ctx implements ICtx {
     }
 
     getDevice(id: string | undefined) {
-        return getDevice(id? id : this._msg.key.id!);
+        return getDevice(id? id : this._msg.key?.id!);
     }
 
     isGroup() {

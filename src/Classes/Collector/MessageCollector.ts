@@ -27,14 +27,14 @@ export class MessageCollector extends Collector {
 
     _collect(msg: IMessageInfo): IMessageCollectorCollect | null {
         let content = getContentFromMsg(msg as any);
-        if(!msg.key.fromMe && this.jid === msg.key.remoteJid && content?.length) {
+        if(!msg.key?.fromMe && this.jid === msg.key?.remoteJid && content?.length) {
             this.received++;
 
             let sender = getSender(msg, this.clientReq.self.core);
             return {
               ...msg,
-              jid: msg.key.remoteJid,
-              decodedJid: msg.key.remoteJid ? decodeJid(msg.key.remoteJid) : null,
+              jid: msg.key?.remoteJid,
+              decodedJid: msg.key?.remoteJid ? decodeJid(msg.key.remoteJid) : null,
               sender,
               decodedSender: sender ? decodeJid(sender) : null,
               content,

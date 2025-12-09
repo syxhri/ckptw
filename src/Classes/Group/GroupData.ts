@@ -85,7 +85,7 @@ export class GroupData {
 
     async membersUpdate(members: string[], action: ParticipantAction): Promise<{
         status: string;
-        jid: string;
+        jid: string | undefined;
         content: BinaryNode;
     }[]> {
         return await this.ctx._client.groupParticipantsUpdate(this.jid, members, action)
