@@ -11,6 +11,7 @@ Create powerful WhatsApp bots easily.
 
 ## Table Of Contents
 - [Installation](#installation)
+- [Development in GitHub Codespaces](#development-in-github-codespaces)
 - [Example Usage](#example-usage)
    * [Using Events](#using-events)
 - [Client Configuration](#client-configuration)
@@ -54,6 +55,32 @@ npm install @mengkodingan/ckptw
 yarn add @mengkodingan/ckptw
 # or
 pnpm add @mengkodingan/ckptw
+```
+
+## Development in GitHub Codespaces
+
+You can develop and test ckptw directly in GitHub Codespaces:
+
+1. Click the "Code" button on the repository
+2. Select "Codespaces" tab
+3. Click "Create codespace on main" (or your branch)
+
+The Codespace will automatically:
+- Set up Node.js 20 environment
+- Install pnpm package manager
+- Install all project dependencies
+- Configure VS Code with TypeScript extensions
+
+Once the Codespace is ready, you can:
+```bash
+# Build the project
+pnpm build
+
+# Run the example
+pnpm example
+
+# Watch for changes
+pnpm watch
 ```
 
 ## Example Usage
